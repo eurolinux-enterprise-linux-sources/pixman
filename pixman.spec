@@ -3,7 +3,7 @@
 
 Name:           pixman
 Version:        0.26.2
-Release:        5.1%{?dist}
+Release:        5%{?dist}
 Summary:        Pixel manipulation library
 
 Group:          System Environment/Libraries
@@ -17,7 +17,6 @@ Source0:	http://xorg.freedesktop.org/archive/individual/lib/%{name}-%{version}.t
 Source1:	make-pixman-snapshot.sh
 
 Patch1:		infinite-loop.patch
-Patch2:		0001-pixman_trapezoid_valid-Fix-underflow-when-bottom-is-.patch
 
 BuildRequires:  automake autoconf libtool pkgconfig
 
@@ -36,7 +35,6 @@ Development library for pixman.
 %prep
 %setup -q
 %patch1 -p1 -b .cve-2013-1591
-%patch2 -p1 -b .cve-2013-6425
 
 %build
 autoreconf -vif
@@ -64,9 +62,6 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 %{_libdir}/pkgconfig/pixman-1.pc
 
 %changelog
-* Wed Dec 18 2013 Soren Sandmann <ssp@redhat.com> 0.26.2-5.1
-- Fix CVE 2013-6425
-
 * Tue Mar 26 2013 Soren Sandmann <ssp@redhat.com> 0.26.2-5
 - Fix bug 914474 (CVE 2013-1591)
 - Remove openmp.patch
