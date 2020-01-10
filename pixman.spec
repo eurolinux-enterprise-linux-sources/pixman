@@ -2,8 +2,8 @@
 %define gitrev 8ff7213f39edc1b2b8b60d6b0cc5d5f14ca1928d
 
 Name:           pixman
-Version:        0.32.4
-Release:        4%{?dist}
+Version:        0.32.8
+Release:        1%{?dist}
 Summary:        Pixel manipulation library
 
 Group:          System Environment/Libraries
@@ -17,8 +17,6 @@ Source0:	http://xorg.freedesktop.org/archive/individual/lib/%{name}-%{version}.t
 Source1:	make-pixman-snapshot.sh
 
 BuildRequires:  automake autoconf libtool pkgconfig
-
-Patch0: 0001-create_bits-Cast-the-result-of-height-stride-to-size.patch
 
 %description
 Pixman is a pixel manipulation library for X and cairo.
@@ -34,7 +32,6 @@ Development library for pixman.
 
 %prep
 %setup -q
-%patch0 -p1 -b .cast
 
 %build
 %configure \
@@ -65,6 +62,9 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 %{_libdir}/pkgconfig/pixman-1.pc
 
 %changelog
+* Tue Nov 03 2015 Adam Jackson <ajax@redhat.com> 0.32.8-1
+- pixman 0.32.8
+
 * Wed Apr 30 2014 Soren Sandmann <ssp@redhat.com> - 0.32.4-4
 - Fix bug 972647
 
