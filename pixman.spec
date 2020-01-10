@@ -2,8 +2,8 @@
 %define gitrev 8ff7213f39edc1b2b8b60d6b0cc5d5f14ca1928d
 
 Name:           pixman
-Version:        0.26.2
-Release:        5%{?dist}
+Version:        0.32.4
+Release:        4%{?dist}
 Summary:        Pixel manipulation library
 
 Group:          System Environment/Libraries
@@ -16,9 +16,9 @@ URL:            http://cgit.freedesktop.org/pixman/
 Source0:	http://xorg.freedesktop.org/archive/individual/lib/%{name}-%{version}.tar.bz2
 Source1:	make-pixman-snapshot.sh
 
-Patch1:		infinite-loop.patch
-
 BuildRequires:  automake autoconf libtool pkgconfig
+
+Patch0: 0001-create_bits-Cast-the-result-of-height-stride-to-size.patch
 
 %description
 Pixman is a pixel manipulation library for X and cairo.
@@ -34,13 +34,16 @@ Development library for pixman.
 
 %prep
 %setup -q
-%patch1 -p1 -b .cve-2013-1591
+%patch0 -p1 -b .cast
 
 %build
-autoreconf -vif
-%configure --disable-static %{?rhel:--disable-openmp}
+%configure \
+%ifarch %{arm}
+  --disable-arm-iwmmxt --disable-arm-iwmmxt2 \
+%endif
+  --disable-static
 
-make %{?_smp_mflags} V=1 CFLAGS="$CFLAGS -fno-strict-aliasing"
+make %{?_smp_mflags} V=1
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -62,9 +65,41 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 %{_libdir}/pkgconfig/pixman-1.pc
 
 %changelog
-* Tue Mar 26 2013 Soren Sandmann <ssp@redhat.com> 0.26.2-5
-- Fix bug 914474 (CVE 2013-1591)
-- Remove openmp.patch
+* Wed Apr 30 2014 Soren Sandmann <ssp@redhat.com> - 0.32.4-4
+- Fix bug 972647
+
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.32.4-3
+- Mass rebuild 2014-01-24
+
+* Mon Jan 6 2014 Soren Sandmann <ssp@redhat.com> 0.32.4-2
+- changelog fixes
+
+* Mon Jan 6 2014 Soren Sandmann <ssp@redhat.com> 0.32.4-1
+- pixman 0.32.4, bug 1043746
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 0.30.0-2
+- Mass rebuild 2013-12-27
+
+* Wed May 8 2013 Soren Sandmann <ssp@redhat.com> 0.30.0-1
+- pixman 0.30.0
+
+* Thu Feb 21 2013 Peter Robinson <pbrobinson@fedoraproject.org> 0.28.0-3
+- Disable iwmmxt on ARM as it's broken b.fd.o # 55519
+
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.28.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
+* Wed Nov 7 2012 Soren Sandmann <ssp@redhat.com> 0.28.0-1
+- pixman 0.28.0
+
+* Thu Oct 25 2012 Soren Sandmann <ssp@redhat.com> 0.27.4-1
+- pixman 0.27.4
+
+* Fri Aug 10 2012 Soren Sandmann <ssp@redhat.com> 0.27.2-1
+- pixman 0.27.2
+
+* Tue Jul 31 2012 Soren Sandmann <ssp@redhat.com> 0.26.2-5
+- Remove openmp patch
 
 * Mon Jul 30 2012 Adam Jackson <ajax@redhat.com> 0.26.2-4
 - Disable openmp patch in RHEL for the moment
@@ -180,7 +215,7 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 * Fri Aug 28 2009 Soren Sandmann <ssp@redhat.com> - 0.16.0-1
 - pixman 0.16.0
 
-* Mon Aug 11 2009 Soren Sandmann <ssp@redhat.com> - 0.15.20-1
+* Tue Aug 11 2009 Soren Sandmann <ssp@redhat.com> - 0.15.20-1
 - pixman 0.15.20
 
 * Mon Aug 10 2009 Ville Skyttä <ville.skytta@iki.fi> - 0.15.18-3
@@ -190,7 +225,7 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 * Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.15.18-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
-* Mon Jul 21 2009 Soren Sandmann <ssp@redhat.com> 0.15.18-1
+* Tue Jul 21 2009 Soren Sandmann <ssp@redhat.com> 0.15.18-1
 - pixman 0.15.18
 
 * Mon Jul 13 2009 Soren Sandmann <ssp@redhat.com> 0.15.16-1
