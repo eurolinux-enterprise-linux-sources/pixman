@@ -2,8 +2,8 @@
 %define gitrev 8ff7213f39edc1b2b8b60d6b0cc5d5f14ca1928d
 
 Name:           pixman
-Version:        0.30.0
-Release:        1%{?dist}
+Version:        0.32.4
+Release:        3%{?dist}
 Summary:        Pixel manipulation library
 
 Group:          System Environment/Libraries
@@ -62,6 +62,18 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 %{_libdir}/pkgconfig/pixman-1.pc
 
 %changelog
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.32.4-3
+- Mass rebuild 2014-01-24
+
+* Mon Jan 6 2014 Soren Sandmann <ssp@redhat.com> 0.32.4-2
+- changelog fixes
+
+* Mon Jan 6 2014 Soren Sandmann <ssp@redhat.com> 0.32.4-1
+- pixman 0.32.4, bug 1043746
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 0.30.0-2
+- Mass rebuild 2013-12-27
+
 * Wed May 8 2013 Soren Sandmann <ssp@redhat.com> 0.30.0-1
 - pixman 0.30.0
 
@@ -197,7 +209,7 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 * Fri Aug 28 2009 Soren Sandmann <ssp@redhat.com> - 0.16.0-1
 - pixman 0.16.0
 
-* Mon Aug 11 2009 Soren Sandmann <ssp@redhat.com> - 0.15.20-1
+* Tue Aug 11 2009 Soren Sandmann <ssp@redhat.com> - 0.15.20-1
 - pixman 0.15.20
 
 * Mon Aug 10 2009 Ville Skyttä <ville.skytta@iki.fi> - 0.15.18-3
@@ -207,7 +219,7 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 * Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.15.18-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
-* Mon Jul 21 2009 Soren Sandmann <ssp@redhat.com> 0.15.18-1
+* Tue Jul 21 2009 Soren Sandmann <ssp@redhat.com> 0.15.18-1
 - pixman 0.15.18
 
 * Mon Jul 13 2009 Soren Sandmann <ssp@redhat.com> 0.15.16-1
