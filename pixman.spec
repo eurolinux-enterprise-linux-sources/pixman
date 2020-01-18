@@ -2,25 +2,19 @@
 %define gitrev 8ff7213f39edc1b2b8b60d6b0cc5d5f14ca1928d
 
 Name:           pixman
-Version:        0.32.6
-Release:        3%{?dist}
+Version:        0.34.0
+Release:        1%{?dist}
 Summary:        Pixel manipulation library
 
 Group:          System Environment/Libraries
 License:        MIT
 URL:            http://cgit.freedesktop.org/pixman/
-#VCS:		git:git://git.freedesktop.org/git/pixman
+#VCS:		git://git.freedesktop.org/git/pixman
 # To make git snapshots:
 # ./make-pixman-snapshot.sh %{?gitrev}
 # if no revision specified, makes a new one from HEAD.
 Source0:	http://xorg.freedesktop.org/archive/individual/lib/%{name}-%{version}.tar.bz2
 Source1:	make-pixman-snapshot.sh
-
-Patch0:		0001-vmx-fix-splat_alpha-for-ppc64le.patch
-Patch1:		0002-vmx-adjust-macros-when-loading-vectors-on-ppc64le.patch
-Patch2:		0003-vmx-encapsulate-the-temporary-variables-inside-the-m.patch
-Patch3:		0004-vmx-fix-unused-var-warnings.patch
-Patch4:		0005-vmx-fix-pix_multiply-for-ppc64le.patch
 
 BuildRequires:  automake autoconf libtool pkgconfig
 
@@ -38,11 +32,6 @@ Development library for pixman.
 
 %prep
 %setup -q
-%patch0 -p1 -b .splat
-%patch1 -p1 -b .macros
-%patch2 -p1 -b .tmpvars
-%patch3 -p1 -b .warnings
-%patch4 -p1 -b .pix_mul
 
 %build
 %configure \
@@ -73,6 +62,9 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 %{_libdir}/pkgconfig/pixman-1.pc
 
 %changelog
+* Thu Feb 11 2016 Oded Gabbay <ogabbay@redhat.com> - 0.34.0-1
+- pixman 0.34.0
+
 * Thu Jul 02 2015 Oded Gabbay <ogabbay@redhat.com> - 0.32.6-3
 - Re-enable VMX fast paths on ppc64le and apply patches that fix them
 
