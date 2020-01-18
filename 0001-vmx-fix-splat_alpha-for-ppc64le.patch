@@ -1,0 +1,45 @@
+From b3a61703f41c6b34ba2ec9736030e1df04f53ab4 Mon Sep 17 00:00:00 2001
+From: Oded Gabbay <oded.gabbay@gmail.com>
+Date: Thu, 25 Jun 2015 15:59:53 +0300
+Subject: [PATCH 1/5] vmx: fix splat_alpha for ppc64le
+
+The permutation vector isn't correct for LE, so correct its values
+in case we are in LE mode.
+
+v2:
+
+- replace _LITTLE_ENDIAN with WORDS_BIGENDIAN for consistency
+- change #ifndef to #ifdef for readability
+
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+Reviewed-by: Adam Jackson <ajax@redhat.com>
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.co.uk>
+---
+ pixman/pixman-vmx.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/pixman/pixman-vmx.c b/pixman/pixman-vmx.c
+index c33631c..d0a4fc8 100644
+--- a/pixman/pixman-vmx.c
++++ b/pixman/pixman-vmx.c
+@@ -37,10 +37,17 @@
+ static force_inline vector unsigned int
+ splat_alpha (vector unsigned int pix)
+ {
++#ifdef WORDS_BIGENDIAN
+     return vec_perm (pix, pix,
+ 		     (vector unsigned char)AVV (
+ 			 0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x04, 0x04,
+ 			 0x08, 0x08, 0x08, 0x08, 0x0C, 0x0C, 0x0C, 0x0C));
++#else
++    return vec_perm (pix, pix,
++		     (vector unsigned char)AVV (
++			 0x03, 0x03, 0x03, 0x03, 0x07, 0x07, 0x07, 0x07,
++			 0x0B, 0x0B, 0x0B, 0x0B, 0x0F, 0x0F, 0x0F, 0x0F));
++#endif
+ }
+ 
+ static force_inline vector unsigned int
+-- 
+2.4.3
+

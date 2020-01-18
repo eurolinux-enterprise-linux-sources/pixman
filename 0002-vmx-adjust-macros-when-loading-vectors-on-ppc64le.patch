@@ -1,0 +1,71 @@
+From f6a26d09257dde9cd41144120543c8b754de515f Mon Sep 17 00:00:00 2001
+From: Fernando Seiti Furusato <ferseiti@linux.vnet.ibm.com>
+Date: Thu, 25 Jun 2015 15:59:54 +0300
+Subject: [PATCH 2/5] vmx: adjust macros when loading vectors on ppc64le
+
+Replaced usage of vec_lvsl to direct unaligned assignment
+operation (=). That is because, according to Power ABI Specification,
+the usage of lvsl is deprecated on ppc64le.
+
+Changed COMPUTE_SHIFT_{MASK,MASKS,MASKC} macro usage to no-op for powerpc
+little endian since unaligned access is supported on ppc64le.
+
+v2:
+
+- replace _LITTLE_ENDIAN with WORDS_BIGENDIAN for consistency
+- fixed whitespaces and indentation issues
+
+Signed-off-by: Fernando Seiti Furusato <ferseiti@linux.vnet.ibm.com>
+Reviewed-by: Adam Jackson <ajax@redhat.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.co.uk>
+---
+ pixman/pixman-vmx.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/pixman/pixman-vmx.c b/pixman/pixman-vmx.c
+index d0a4fc8..e33d9d9 100644
+--- a/pixman/pixman-vmx.c
++++ b/pixman/pixman-vmx.c
+@@ -136,6 +136,7 @@ over (vector unsigned int src,
+     over (pix_multiply (src, mask),					\
+           pix_multiply (srca, mask), dest)
+ 
++#ifdef WORDS_BIGENDIAN
+ 
+ #define COMPUTE_SHIFT_MASK(source)					\
+     source ## _mask = vec_lvsl (0, source);
+@@ -169,6 +170,30 @@ over (vector unsigned int src,
+     v ## mask = (typeof(v ## mask))			  \
+ 	vec_perm (tmp1, tmp2, mask ## _mask);
+ 
++#else
++
++/* Now the COMPUTE_SHIFT_{MASK, MASKS, MASKC} below are just no-op.
++ * They are defined that way because little endian altivec can do unaligned
++ * reads natively and have no need for constructing the permutation pattern
++ * variables.
++ */
++#define COMPUTE_SHIFT_MASK(source)
++
++#define COMPUTE_SHIFT_MASKS(dest, source)
++
++#define COMPUTE_SHIFT_MASKC(dest, source, mask)
++
++# define LOAD_VECTORS(dest, source)			\
++    v ## source = *((typeof(v ## source)*)source);	\
++    v ## dest = *((typeof(v ## dest)*)dest);
++
++# define LOAD_VECTORSC(dest, source, mask)		\
++    v ## source = *((typeof(v ## source)*)source);	\
++    v ## dest = *((typeof(v ## dest)*)dest);		\
++    v ## mask = *((typeof(v ## mask)*)mask);
++
++#endif /* WORDS_BIGENDIAN */
++
+ #define LOAD_VECTORSM(dest, source, mask)				\
+     LOAD_VECTORSC (dest, source, mask)					\
+     v ## source = pix_multiply (v ## source,				\
+-- 
+2.4.3
+
